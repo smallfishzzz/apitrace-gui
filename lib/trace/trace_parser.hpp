@@ -184,7 +184,6 @@ protected:
     EnumSig *parse_old_enum_sig();
     EnumSig *parse_enum_sig();
     BitmaskSig *parse_bitmask_sig();
-    
 public:
     static CallFlags
     lookupCallFlags(const char *name);

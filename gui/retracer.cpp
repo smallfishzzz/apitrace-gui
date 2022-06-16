@@ -468,6 +468,7 @@ void Retracer::run()
         QDebug debug(QtDebugMsg);
         debug << "Running:";
         debug << prog;
+		//debug << "--pframe-time";
         foreach (const QString &argument, arguments) {
             debug << argument;
         }

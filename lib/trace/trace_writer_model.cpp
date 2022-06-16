@@ -113,6 +113,7 @@ public:
     }
 
     void visit(Call *call) {
+		printf("visit\n");
         unsigned call_no = writer.beginEnter(call->sig, call->thread_id);
         if (call->flags & CALL_FLAG_FAKE) {
             writer.writeFlags(FLAG_FAKE);

@@ -379,7 +379,6 @@ public:
 
     /** Machine-readible value */
     Value *machineValue;
-    
     virtual bool toBool(void) const override;
     virtual signed long long toSInt(void) const override;
     virtual unsigned long long toUInt(void) const override;
@@ -454,8 +453,8 @@ public:
     virtual void visit(Repr *);
 protected:
     inline void _visit(Value *value) {
-        if (value) { 
-            value->visit(*this); 
+        if (value) {
+            value->visit(*this);
         }
     }
 };
@@ -491,7 +490,7 @@ enum {
      * Some incomplete calls are unreproduceable, but not all.
      */
     CALL_FLAG_NON_REPRODUCIBLE         = (1 << 1),
-    
+
     /**
      * Whether this call has no side-effects, therefore don't need to be
      * retraced.
@@ -510,13 +509,13 @@ enum {
      * Whether this call causes render target to be swapped.
      *
      * This does not mark frame termination by itself -- that's solely the
-     * responsibility of `endOfFrame` bit. 
+     * responsibility of `endOfFrame` bit.
      *
      * This mean that snapshots should be take prior to the call, and not
      * after.
      */
     CALL_FLAG_SWAP_RENDERTARGET         = (1 << 4),
-        
+
     /**
      * Whether this call terminates a frame.
      *
@@ -555,6 +554,8 @@ class Call
 public:
     unsigned thread_id;
     unsigned no;
+    int64_t cpuStart;
+    int64_t cpuEnd;
     const FunctionSig *sig;
     std::vector<Arg> args;
     Value *ret;
@@ -564,9 +565,11 @@ public:
     bool reuse_call;
 
     Call(const FunctionSig *_sig, const CallFlags &_flags, unsigned _thread_id) :
-        thread_id(_thread_id), 
-        sig(_sig), 
-        args(_sig->num_args), 
+        thread_id(_thread_id),
+        cpuStart(0),
+        cpuEnd(0),
+        sig(_sig),
+        args(_sig->num_args),
         ret(0),
         flags(_flags),
         backtrace(0),

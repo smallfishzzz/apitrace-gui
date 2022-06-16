@@ -32,6 +32,7 @@
 
 #include "os.hpp"
 #include "os_thread.hpp"
+#include "os_time.hpp"
 #include "os_string.hpp"
 #include "os_version.hpp"
 #include "trace_ostream.hpp"
@@ -69,6 +70,7 @@ static void exceptionCallback(void)
 LocalWriter::LocalWriter() :
     acquired(0)
 {
+    startTime = os::getTime();
     os::String process = os::getProcessName();
     os::log("apitrace: loaded into %s\n", process.str());
 
@@ -207,6 +209,7 @@ unsigned LocalWriter::beginEnter(const FunctionSig *sig, bool fake) {
 }
 
 void LocalWriter::endEnter(void) {
+    Writer::writeCpuStart(os::getTime() - startTime);
     Writer::endEnter();
     --acquired;
     mutex.unlock();
@@ -216,6 +219,7 @@ void LocalWriter::beginLeave(unsigned call) {
     mutex.lock();
     ++acquired;
     Writer::beginLeave(call);
+    Writer::writeCpuEnd(os::getTime() - startTime);
 }
 
 void LocalWriter::endLeave(void) {
@@ -273,7 +277,6 @@ void fakeMemcpy(const void *ptr, size_t size) {
         size = maxSize;
     }
 #endif
-
     localWriter.beginArg(0);
     localWriter.writePointer((uintptr_t)ptr);
     localWriter.endArg();

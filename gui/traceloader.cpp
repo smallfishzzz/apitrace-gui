@@ -121,6 +121,7 @@ void TraceLoader::scanTrace()
     int numOfFrames = 0;
     int numOfCalls = 0;
     int lastPercentReport = 0;
+    int64_t lastFrameEndTime = 0;
 
     m_parser.getBookmark(startBookmark);
 
@@ -135,6 +136,7 @@ void TraceLoader::scanTrace()
             currentFrame->number = numOfFrames;
             currentFrame->setNumChildren(numOfCalls);
             currentFrame->setLastCallIndex(call->no);
+            currentFrame->setDuration(call->cpuEnd - lastFrameEndTime);
             frames.append(currentFrame);
 
             m_createdFrames.append(currentFrame);
@@ -147,6 +149,7 @@ void TraceLoader::scanTrace()
             }
             m_parser.getBookmark(startBookmark);
             numOfCalls = 0;
+            lastFrameEndTime = call->cpuEnd;
         }
         delete call;
     }
@@ -445,7 +448,7 @@ TraceLoader::FrameContents::isEmpty()
 
 bool
 TraceLoader::FrameContents::load(TraceLoader   *loader,
-                               ApiTraceFrame *currentFrame, 
+                               ApiTraceFrame *currentFrame,
                                QHash<QString, QUrl> helpHash,
                                trace::Parser &parser)
 {

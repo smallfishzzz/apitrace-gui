@@ -77,6 +77,9 @@ namespace trace {
 
         void writeFlags(unsigned flags);
 
+        void writeCpuStart(signed long long time);
+        void writeCpuEnd(signed long long time);
+
         void beginArray(size_t length);
         inline void endArray(void) {}
 

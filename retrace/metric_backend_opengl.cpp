@@ -419,10 +419,10 @@ void MetricBackend_opengl::beginQuery(QueryBoundary boundary) {
     // DRAWCALL is a CALL
     if (boundary == QUERY_BOUNDARY_DRAWCALL) beginQuery(QUERY_BOUNDARY_CALL);
 }
-
 void MetricBackend_opengl::endQuery(QueryBoundary boundary) {
     if (queryInProgress[boundary]) {
         // CPU related
+
         if (metrics[METRIC_CPU_DURATION].profiled[boundary])
         {
             cpuEnd[boundary] = getCurrentTime();

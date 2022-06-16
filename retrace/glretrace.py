@@ -219,10 +219,12 @@ class GlRetracer(Retracer):
            print(r'    }')
 
         # Post-snapshots
-        if function.name in ('glFlush', 'glFinish'):
+        if function.name in ('glFlush'):
             print('    if (!retrace::doubleBuffer) {')
             print('        glretrace::frame_complete(call);')
             print('    }')
+        if function.name in ('glFinish'):
+            print('        glretrace::frame_complete(call);')
         if is_draw_arrays or is_draw_elements or is_misc_draw:
             print('    assert(call.flags & trace::CALL_FLAG_RENDER);')
 

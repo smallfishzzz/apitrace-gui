@@ -250,6 +250,8 @@ public:
     ~ApiTraceCall();
 
     int index() const;
+    int64_t cpuStart() const;
+    int64_t cpuEnd() const;
     QString name() const;
     QStringList argNames() const;
     QVector<QVariant> arguments() const;
@@ -304,6 +306,8 @@ private:
 private:
     int m_index;
     unsigned m_thread;
+    int64_t m_cpuStart;
+    int64_t m_cpuEnd;
     ApiTraceCallSignature *m_signature;
     QVector<QVariant> m_argValues;
     QVariant m_returnValue;
@@ -366,6 +370,9 @@ public:
     void setLastCallIndex(unsigned index);
     unsigned lastCallIndex() const;
 
+    void setDuration(int64_t duration);
+    int64_t duration() const;
+
     void missingThumbnail() override;
 
 private:
@@ -376,5 +383,6 @@ private:
     bool m_loaded;
     unsigned m_callsToLoad;
     unsigned m_lastCallIndex;
+    int64_t m_duration;
 };
 Q_DECLARE_METATYPE(ApiTraceFrame*);

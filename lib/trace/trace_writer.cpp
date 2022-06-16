@@ -191,6 +191,21 @@ Writer::writeFlags(unsigned flags) {
 }
 
 void
+Writer::writeCpuStart(signed long long time) {
+    _writeByte(trace::CALL_CPUSTART);
+    _writeUInt(time);
+
+}
+
+void
+Writer::writeCpuEnd(signed long long time) {
+    _writeByte(trace::CALL_CPUEND);
+    _writeUInt(time);
+
+}
+
+
+void
 Writer::writeProperty(const char *name, const char *value)
 {
     assert(name);

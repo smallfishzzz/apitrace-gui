@@ -69,6 +69,7 @@ namespace trace {
          */
         os::recursive_mutex mutex;
         int acquired;
+        int64_t startTime;
 
         /**
          * ID of the processed that opened the trace file.

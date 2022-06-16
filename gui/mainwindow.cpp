@@ -169,9 +169,12 @@ void MainWindow::callItemSelected(const QModelIndex &index)
     if (event && event->type() == ApiTraceEvent::Call) {
         ApiTraceCall *call = static_cast<ApiTraceCall*>(event);
         m_ui.detailsDock->setWindowTitle(
-            tr("Details View. Frame %1, Call %2")
+            tr("Details View. Frame %1, Call %2, TS %3.%4ms, D %5ns")
             .arg(call->parentFrame() ? call->parentFrame()->number : 0)
-            .arg(call->index()));
+            .arg(call->index())
+            .arg(call->cpuStart()/1000000)
+            .arg(call->cpuStart()%1000000, 6, 10, QChar('0'))
+            .arg(call->cpuEnd() - call->cpuStart()));
         m_ui.detailsWebView->setHtml(call->toHtml());
         m_ui.detailsDock->show();
         m_ui.callView->scrollTo(index);

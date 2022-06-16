@@ -43,12 +43,14 @@ enum Event {
 };
 
 enum CallDetail {
-    CALL_END = 0,
+    CALL_END,
     CALL_ARG,
     CALL_RET,
     CALL_THREAD,
     CALL_BACKTRACE,
     CALL_FLAGS,
+    CALL_CPUSTART,
+    CALL_CPUEND,
 };
 
 enum Type {

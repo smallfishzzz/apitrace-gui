@@ -691,6 +691,8 @@ ApiTraceCall::loadData(TraceLoader *loader,
 {
     m_index = call->no;
     m_thread = call->thread_id;
+    m_cpuStart = call->cpuStart;
+    m_cpuEnd = call->cpuEnd;
     m_signature = loader->signature(call->sig->id);
 
     if (!m_signature) {
@@ -875,6 +877,16 @@ int ApiTraceCall::index() const
     return m_index;
 }
 
+int64_t ApiTraceCall::cpuStart() const
+{
+    return m_cpuStart;
+}
+
+int64_t ApiTraceCall::cpuEnd() const
+{
+    return m_cpuEnd;
+}
+
 QString ApiTraceCall::name() const
 {
     return m_signature->name();
@@ -969,8 +981,8 @@ QStaticText ApiTraceCall::staticText() const
                 m_signature->name());
         for (int i = 0; i < argNames.count(); ++i) {
             richText += QLatin1String("<span style=\"color:#0000ff\">");
+
             QString argText = apiVariantToString(argValues[i]);
-    
             //if arguments are really long (e.g. shader text), cut them
             // and elide it
             if (argText.length() > 40) {
@@ -1180,9 +1192,10 @@ QStaticText ApiTraceFrame::staticText() const
                 "<span style=\"font-weight:bold\">Frame %1</span>"
                 "&nbsp;&nbsp;&nbsp;"
                 "<span style=\"font-style:italic;font-size:small;font-weight:lighter;\"> "
-                "(%2 calls)</span>")
+                "(%2 calls) %3 us</span>")
             .arg(number)
-            .arg(m_loaded ? m_calls.count() : m_callsToLoad);
+            .arg(m_loaded ? m_calls.count() : m_callsToLoad)
+            .arg(m_duration);
 
     //mark the frame if it uploads more than a meg a frame
     if (m_binaryDataSize > (1024*1024)) {
@@ -1356,6 +1369,17 @@ unsigned ApiTraceFrame::lastCallIndex() const
         return m_lastCallIndex;
     }
 }
+
+void ApiTraceFrame::setDuration(int64_t duration)
+{
+   m_duration = duration/1000;
+}
+
+int64_t ApiTraceFrame::duration() const
+{
+    return m_duration;
+}
+
 
 void ApiTraceFrame::missingThumbnail()
 {

@@ -147,7 +147,7 @@ void Parser::close(void) {
         }
     }
     enums.clear();
-    
+
     for (auto sig : bitmasks) {
         if (sig) {
             for (unsigned flag = 0; flag < sig->num_flags; ++flag) {
@@ -172,7 +172,7 @@ void Parser::getBookmark(ParseBookmark &bookmark) {
 void Parser::setBookmark(const ParseBookmark &bookmark) {
     file->setCurrentOffset(bookmark.offset);
     next_call_no = bookmark.next_call_no;
-    
+
     // Simply ignore all pending calls
     deleteAll(calls);
 }
@@ -481,7 +481,7 @@ Call *Parser::parse_leave(Mode mode) {
     }
     if (!call) {
         /* This might happen on random access, when an asynchronous call is stranded
-         * between two frames.  We won't return this call, but we still need to skip 
+         * between two frames.  We won't return this call, but we still need to skip
          * over its data.
          */
         const FunctionSig sig = {0, NULL, 0, NULL};
@@ -503,6 +503,7 @@ Call *Parser::parse_leave(Mode mode) {
 bool Parser::parse_call_details(Call *call, Mode mode) {
     do {
         int c = read_byte();
+//		printf("read c = %d  \n", c);
         switch (c) {
         case trace::CALL_END:
             if (TRACE_VERBOSE) {
@@ -537,6 +538,18 @@ bool Parser::parse_call_details(Call *call, Mode mode) {
                     call->flags |= CALL_FLAG_FAKE;
                 }
             }
+            break;
+        case trace::CALL_CPUSTART:
+            if (TRACE_VERBOSE) {
+                std::cerr << "\tCALL_CPUSTART\n";
+            }
+            call->cpuStart = read_uint();
+            break;
+        case trace::CALL_CPUEND:
+            if (TRACE_VERBOSE) {
+                std::cerr << "\tCALL_CPUEND\n";
+            }
+            call->cpuEnd = read_uint();
             break;
         default:
             std::cerr << "error: ("<<call->name()<< ") unknown call detail "

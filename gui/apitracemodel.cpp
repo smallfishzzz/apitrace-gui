@@ -59,7 +59,7 @@ QVariant ApiTraceModel::data(const QModelIndex &index, int role) const
                     "<span style=\"font-weight:bold; font-size:large; vertical-align:center; padding-bottom: 30px \">\n"
                     "Frame %2</span>\n"
                     "</div>\n"
-                    "<div >%3 calls%4</div>\n"
+                    "<div >%3 calls %4ms %5</div>\n"
                     "</div>\n";
 
 
@@ -94,10 +94,13 @@ QVariant ApiTraceModel::data(const QModelIndex &index, int role) const
                     ? frame->numTotalCalls()
                     : frame->numChildrenToLoad();
 
+            int64_t duration = frame->duration();
+
             return tr(htmlTempl)
                     .arg(thumbStr)
                     .arg(frame->number)
                     .arg(numCalls)
+                    .arg(duration)
                     .arg(sizeStr);
         }
     }

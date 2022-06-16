@@ -153,6 +153,7 @@ callFlagTable[] = {
     { "glDebugMessageInsertAMD",                       CALL_FLAG_NO_SIDE_EFFECTS | CALL_FLAG_MARKER },
     { "glDebugMessageInsertARB",                       CALL_FLAG_NO_SIDE_EFFECTS | CALL_FLAG_MARKER },
     { "glDebugMessageInsertKHR",                       CALL_FLAG_NO_SIDE_EFFECTS | CALL_FLAG_MARKER },
+    { "glFinish",                                      CALL_FLAG_END_FRAME },
     { "glFrameTerminatorGREMEDY",                      CALL_FLAG_END_FRAME },
     { "glGetActiveAtomicCounterBufferiv",              CALL_FLAG_NO_SIDE_EFFECTS },
     { "glGetActiveAttrib",                             CALL_FLAG_NO_SIDE_EFFECTS },

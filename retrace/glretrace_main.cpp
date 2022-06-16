@@ -222,7 +222,8 @@ completeCallQuery(CallQuery& query) {
         if (retrace::profilingGpuTimes) {
             if (supportsTimestamp) {
                 /* Use ARB queries in case EXT not present */
-                glGetQueryObjecti64v(query.ids[GPU_START], GL_QUERY_RESULT, &gpuStart);
+                //glGetQueryObjecti64v(query.ids[GPU_START], GL_QUERY_RESULT, &gpuStart);
+                gpuStart = query.cpuStart;
                 glGetQueryObjecti64v(query.ids[GPU_DURATION], GL_QUERY_RESULT, &gpuDuration);
             } else {
                 glGetQueryObjecti64vEXT(query.ids[GPU_DURATION], GL_QUERY_RESULT, &gpuDuration);
@@ -246,9 +247,7 @@ completeCallQuery(CallQuery& query) {
     }
 
     if (retrace::profilingCpuTimes) {
-        double cpuTimeScale = 1.0E9 / getTimeFrequency();
-        cpuDuration = (query.cpuEnd - query.cpuStart) * cpuTimeScale;
-        query.cpuStart *= cpuTimeScale;
+        cpuDuration = query.cpuEnd - query.cpuStart;
     }
 
     if (retrace::profilingMemoryUsage) {
@@ -330,7 +329,7 @@ beginProfile(trace::Call &call, bool isDraw) {
     /* CPU profiling for all calls */
     if (retrace::profilingCpuTimes) {
         CallQuery& query = callQueries.back();
-        query.cpuStart = getCurrentTime();
+        query.cpuStart = call.cpuStart;
     }
 
     if (retrace::profilingMemoryUsage) {
@@ -355,7 +354,7 @@ endProfile(trace::Call &call, bool isDraw) {
     /* CPU profiling for all calls */
     if (retrace::profilingCpuTimes) {
         CallQuery& query = callQueries.back();
-        query.cpuEnd = getCurrentTime();
+        query.cpuEnd = call.cpuEnd;
     }
 
     /* GPU profiling only for draw calls */
@@ -505,10 +504,10 @@ initContext() {
     /* Sync the gpu and cpu start times */
     if (retrace::profilingCpuTimes || retrace::profilingGpuTimes) {
         if (!retrace::profiler.hasBaseTimes()) {
-            double cpuTimeScale = 1.0E9 / getTimeFrequency();
-            GLint64 currentTime = getCurrentTime() * cpuTimeScale;
-            retrace::profiler.setBaseCpuTime(currentTime);
-            retrace::profiler.setBaseGpuTime(currentTime);
+            //double cpuTimeScale = 1.0E9 / getTimeFrequency();
+            //GLint64 currentTime = getCurrentTime() * cpuTimeScale;
+            //retrace::profiler.setBaseCpuTime(currentTime);
+            //retrace::profiler.setBaseGpuTime(currentTime);
         }
     }
 
@@ -881,6 +880,7 @@ retrace::flushRendering(void) {
 
 void
 retrace::finishRendering(void) {
+	
     if (profilingWithBackends && glretrace::curMetricBackend) {
             (glretrace::curMetricBackend)->endQuery(QUERY_BOUNDARY_FRAME);
     }
